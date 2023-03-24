@@ -5,10 +5,11 @@ import { jwtConstants } from 'src/constants';
 import { UsersModule } from 'src/users/users.module';
 import { AuthController } from './auth.controller';
 
+
 @Module({
   controllers: [AuthController],
   imports: [UsersModule,
-    JwtModule.register({
+      JwtModule.register({
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '30000s' },
     }),
