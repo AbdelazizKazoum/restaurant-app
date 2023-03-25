@@ -24,7 +24,7 @@ export class UsersService {
   }
   async findWithFilter(userFilterDto: UserFilterDto) {
     const { search, page } = userFilterDto;
-
+    const take = 8;
     console.log(userFilterDto);
 
     const query = this.usersRepository.createQueryBuilder('user');
@@ -34,7 +34,7 @@ export class UsersService {
       query.andWhere('user.user_name like :username', { username: `%${search}%` });
     }
 
-    const [listUsers, count] = await query.skip(((page - 1) * 5)).take(5)
+    const [listUsers, count] = await query.skip(((page - 1) * take)).take(take)
       .getManyAndCount();
 
 
@@ -43,8 +43,8 @@ export class UsersService {
       meta: {
         count: count,
         page: page,
-        take: 5,
-        lastPage: Math.ceil(count / 5),
+        take,
+        lastPage: Math.ceil(count / take),
       }
     }
 
