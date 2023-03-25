@@ -20,4 +20,7 @@ export class User {
     @Column()
     @Exclude()
     salt: string;
+
+    // @Column()
+    // activity: number;
 }

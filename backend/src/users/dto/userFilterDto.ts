@@ -1,6 +1,8 @@
 /* eslint-disable prettier/prettier */
 
+import { IsNumber } from "class-validator";
+
 export class UserFilterDto {
-    email: string;
-    user_name: string;
+    search: string;
+    page: number;
 }

@@ -22,7 +22,7 @@ export class UsersController {
   // }
 
   @Get()
-  userFilter(@Query() userFilterDto: UserFilterDto): Promise<User[]> {
+  userFilter(@Query() userFilterDto: UserFilterDto) {
     return this.usersService.findWithFilter(userFilterDto);
   }
 

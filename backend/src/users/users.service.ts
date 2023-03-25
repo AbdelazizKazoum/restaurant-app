@@ -22,22 +22,31 @@ export class UsersService {
   findAll() {
     return this.usersRepository.find();
   }
-  async findWithFilter(userFilterDto: UserFilterDto): Promise<User[]> {
-    const { email, user_name } = userFilterDto;
+  async findWithFilter(userFilterDto: UserFilterDto) {
+    const { search, page } = userFilterDto;
+
+    console.log(userFilterDto);
 
     const query = this.usersRepository.createQueryBuilder('user');
 
-    if (email) {
-      query.andWhere("user.email like :email", { email: `%${email}%` });
+    if (search) {
+      query.andWhere("user.email like :email", { email: `%${search}%` });
+      query.andWhere('user.user_name like :username', { username: `%${search}%` });
     }
 
-    if (user_name) {
-      query.andWhere('user.user_name like :username', { username: `%${user_name}%` });
+    const [listUsers, count] = await query.skip(((page - 1) * 5)).take(5)
+      .getManyAndCount();
+
+
+    return {
+      listUsers,
+      meta: {
+        count: count,
+        page: page,
+        take: 5,
+        lastPage: Math.ceil(count / 5),
+      }
     }
-
-    const result = await query.getMany();
-
-    return result;
 
   }
 

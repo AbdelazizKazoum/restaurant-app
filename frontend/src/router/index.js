@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import dashboard from '../pages/master/dashboard'
 import home from '../pages/home'
-import profile from '../pages/profile'
+import users from '../pages/users'
 import signup from '../pages/signup.vue'
 import signin from '../pages/signin.vue'
 
@@ -19,9 +19,9 @@ const routes = [
         component: home
       },
         {
-        path: '/profile',
-        name: 'profile',
-        component : profile 
+        path: '/users',
+        name: 'users',
+        component : users 
   },
   ]
 },
