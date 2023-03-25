@@ -1,5 +1,7 @@
 <template>
     <section class="bg-gray-50 dark:bg-gray-900">
+        <errorMessage v-show="error" :message="message" hideMessage @hideMessage="hideMessage"></errorMessage>
+        <SuccessMessage v-show="success" :message="message" hideMessage @hideMessage="hideMessage"></SuccessMessage>
         <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
             <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
                 <img class="w-8 h-8 mr-2" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" alt="logo">
@@ -60,9 +62,11 @@
                             Create an account
                         </button>
                         <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-                            Already have an account? <a href="#"
-                                class="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
+                            Already have an account? <router-link to="/signup" href="#"
+                                class="font-medium text-dark-600 hover:underline dark:text-primary-500">Login
+                                here</router-link>
                         </p>
+
                     </form>
                 </div>
             </div>
@@ -71,37 +75,79 @@
 </template>
 
 <script>
-import { reactive } from 'vue';
+import { reactive, ref, onMounted } from 'vue';
 import axios from 'axios';
+import errorMessage from '../components/messages/errorMessage.vue';
+import successMessage from '../components/messages/successMessage.vue';
+import SuccessMessage from '../components/messages/successMessage.vue';
+import { useRouter } from 'vue-router';
+
 
 
 export default {
+    components: { errorMessage, SuccessMessage },
 
     setup() {
+
+        //---------------- start variables --------------------------
         const newUser = reactive({
             email: '',
             user_name: '',
             pass: '',
             confirmPass: ''
         })
+        const error = ref(false);
+        const success = ref(false);
+        const message = ref();
+        const router = useRouter();
 
+        //------------------ Register ------------------------------
         const register = async () => {
             try {
-                const { data: user } = await axios.post('http://localhost:3000/api/auth/register', {
+                const { data: user } = await axios.post('auth/register', {
                     email: newUser.email,
                     user_name: newUser.user_name,
                     pass: newUser.pass,
                     confirmPass: newUser.confirmPass
                 });
+                success.value = true;
+                message.value = 'User created, login to your account';
+
                 console.log(user);
-            } catch (err) {
-                console.log(err.message);
+            } catch ({ response }) {
+                message.value = response.data.message;
+                error.value = true;
+                console.log(message.value)
             }
         }
+        //-------------------Mounted----------------------
+        onMounted(async () => {
+            try {
+                const { data } = await axios.get('auth');
+
+                if (data) {
+                    router.push({ name: 'dashboard' })
+                }
+
+            } catch (err) {
+                console.log(err)
+            }
+        });
+
+        //------------ Events -----------------
+        const hideMessage = () => {
+            error.value = false;
+            success.value = false;
+        }
+
 
         return {
             newUser,
-            register
+            error,
+            success,
+            register,
+            hideMessage,
+            message
         }
     }
 }

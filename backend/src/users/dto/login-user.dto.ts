@@ -8,7 +8,7 @@ export class LoginUserDto {
     email: string;
 
     @IsNotEmpty()
-    @MaxLength(16, { message: 'invalid values !!' })
-    @MinLength(6, { message: 'invalid values !!' })
+    @MaxLength(16, { message: 'Invalid password !' })
+    @MinLength(6, { message: 'Invalid password !' })
     password: string;
 }

@@ -112,12 +112,13 @@
           </div>
           <!-- User login -->
           <div class="w-[200px] ">
-            <div class="flex items-center justify-start space-x-4" @click="toggleDrop">
+            <div class="cursor-pointer flex items-center justify-start space-x-4" @click="toggleDrop">
               <img class="w-10 h-10 rounded-full border-2 border-gray-50"
-                src="https://yt3.ggpht.com/hqsxh-Vnbw9OK0_X4DAWh6RkmEUVnL-82SRCyh-IKr9fIXR8zhUCRdBEwgWWL_14q_L8Piod=s108-c-k-c0x00ffffff-no-rj"
-                alt="">
+                src="https://cdn-icons-png.flaticon.com/512/186/186313.png" alt="">
               <div class="font-semibold dark:text-white text-left">
-                <div>Madona ,Dev OP</div>
+                <div>
+                  <p>{{ user.user_name }}</p>
+                </div>
                 <div class="text-xs text-gray-500 dark:text-gray-400">Admin</div>
               </div>
             </div>
@@ -134,8 +135,9 @@
                 <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
                   id="menu-item-2">License</a>
                 <form method="POST" action="#" role="none">
-                  <button type="submit" class="text-gray-700 block w-full px-4 py-2 text-left text-sm" role="menuitem"
-                    tabindex="-1" id="menu-item-3">Sign out</button>
+                  <button @click.prevent="logout" type="submit"
+                    class="text-gray-700 block w-full px-4 py-2 text-left text-sm" role="menuitem" tabindex="-1"
+                    id="menu-item-3">Sign out</button>
                 </form>
               </div>
             </div>
@@ -153,7 +155,8 @@
 </template>
 <script>
 import signup from '@/pages/signup.vue';
-import { ref } from 'vue';
+import axios from 'axios';
+import { ref, reactive } from 'vue';
 import { mapActions } from 'vuex';
 
 export default {
@@ -162,14 +165,25 @@ export default {
     return {
       showDropDown: false,
       showSide: true,
-      logedIn: ref(false)
+      logedIn: ref(false),
+      user: reactive({
+        id: '',
+        username: '',
+        email: '',
+      })
     }
   },
-  mounted() {
-    // if (this.logedIn.value != true) {
-    //   // this.$router.push({ path: '/signup', component: signup })
-    //   this.redirectTo({ val: 'signup' });
-    // }
+  async mounted() {
+    try {
+      const { data } = await axios.get('auth');
+
+      this.user = data;
+      console.log(this.user)
+
+    } catch (err) {
+      console.log('no user')
+      this.$router.push({ name: 'signup' })
+    }
   },
   methods: {
     ...mapActions(['redirectTo']),
@@ -181,7 +195,16 @@ export default {
     // toggle user 
     toggleDrop() {
       this.showDropDown = !this.showDropDown
-
+    },
+    //logout
+    async logout() {
+      try {
+        const { data } = await axios.get('auth/logout');
+        this.$router.push({ name: 'signup' });
+      } catch (err) {
+        // this.redirectTo('signup')
+        console.log(err)
+      }
     }
   }
 

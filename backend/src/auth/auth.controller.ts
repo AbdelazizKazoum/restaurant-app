@@ -50,7 +50,7 @@ export class AuthController {
             throw new BadRequestException('Email or Password is incorrect !!');
         }
         if (!await bcrypt.compare(loginUser.password, user.pass)) {
-            throw new BadRequestException('Email or password is invalid !!');
+            throw new BadRequestException('Email or password is incorrect !!');
         }
         const jwt = await this.jwtService.signAsync({ id: user.id })
         response.cookie('jwt', jwt, { httpOnly: true })

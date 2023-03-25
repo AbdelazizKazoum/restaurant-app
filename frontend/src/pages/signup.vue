@@ -11,7 +11,6 @@
                     <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                         Login
                     </h1>
-                    {{ loginCredantials.email }}
                     <form @submit.prevent="loginHandler" class="space-y-4 md:space-y-6" action="#">
                         <div>
                             <label for="email"
@@ -27,6 +26,11 @@
                                 placeholder="••••••••"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 required="true">
+                        </div>
+                        <div v-for="message in error.messages" class="flex items-start ml-3 text-red-500">
+                            <p>
+                                {{ message }}
+                            </p>
                         </div>
                         <div class="flex items-start">
                             <div class="flex items-center h-5">
@@ -45,8 +49,9 @@
                             Login
                         </button>
                         <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-                            You don't have an account? <a href="#"
-                                class="font-medium text-primary-600 hover:underline dark:text-primary-500">Register now</a>
+                            You don't have an account? <router-link to="/signin" href="#"
+                                class="font-medium text-primary-600 hover:underline dark:text-primary-500">Register
+                                now</router-link>
                         </p>
                     </form>
                 </div>
@@ -56,7 +61,10 @@
 </template>
 
 <script>
-import { reactive } from 'vue';
+import { isArray } from '@vue/shared';
+import axios from 'axios';
+import { reactive, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
 
 export default {
@@ -66,14 +74,38 @@ export default {
             email: '',
             password: '',
         })
+        const router = useRouter();
+        const error = reactive({
+            active: false,
+            messages: []
+        })
 
-        const loginHandler = () => {
-
-            console.log(loginCredantials);
-
+        const loginHandler = async () => {
+            try {
+                const { data } = await axios.post('auth/login', loginCredantials);
+                router.push('/')
+            } catch ({ response }) {
+                error.active = true;
+                error.messages = [...isArray(response.data.message) ? response.data.message : Array(response.data.message)]
+                console.log(response.data.message);
+            }
         }
+        //-------------------Mounted----------------------
+        onMounted(async () => {
+            try {
+                const { data } = await axios.get('auth');
+                if (data) {
+                    router.push({ name: 'dashboard' })
+                }
+            } catch (err) {
+                console.log(err)
+            }
+        });
+
         return {
-            loginCredantials, loginHandler
+            loginCredantials,
+            loginHandler,
+            error
         }
     }
 }
