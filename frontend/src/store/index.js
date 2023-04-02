@@ -14,8 +14,6 @@ const actions = {
     commit('redirectTo',payload.val);
   }
 }
-
-
 export default createStore({
   state ,
   getters,

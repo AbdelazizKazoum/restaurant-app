@@ -1,11 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm/repository/Repository';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserFilterDto } from './dto/userFilterDto';
 import { User } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -57,11 +58,36 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { id } });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return this.usersRepository.update(id, updateUserDto);
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const { pass, confirmPass } = updateUserDto
+    if (pass) {
+      if (pass === confirmPass) {
+        const salt = await bcrypt.genSalt();
+        const hash = await bcrypt.hash(pass, salt);
+
+        const user = {
+          email: updateUserDto.email,
+          user_name: updateUserDto.user_name,
+          pass: hash,
+          salt
+        };
+        return this.usersRepository.update(id, user);
+      }
+      else {
+        throw new BadRequestException('password do not match')
+      }
+    } else {
+      const user = { email: updateUserDto.email, user_name: updateUserDto.user_name }
+      console.log('done');
+      return this.usersRepository.update(id, user);
+    }
   }
 
   remove(id: number) {
     return this.usersRepository.delete(id);
   }
 }
+function UseInterceptors(ClassSerializerInterceptor: any) {
+  throw new Error('Function not implemented.');
+}
+

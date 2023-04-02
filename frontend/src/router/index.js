@@ -5,6 +5,7 @@ import home from '../pages/home'
 import users from '../pages/users'
 import signup from '../pages/signup.vue'
 import signin from '../pages/signin.vue'
+import products from '../pages/products.vue';
 
 
 const routes = [
@@ -22,7 +23,12 @@ const routes = [
         path: '/users',
         name: 'users',
         component : users 
-  },
+      },
+      {
+        path:'/products',
+        name : 'products',
+        component : products
+      }
   ]
 },
 {

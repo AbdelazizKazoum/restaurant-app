@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -7,6 +7,7 @@ import { UserFilterDto } from './dto/userFilterDto';
 import { User } from './entities/user.entity';
 import { ValidationPipe } from '@nestjs/common/pipes';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
@@ -28,7 +29,7 @@ export class UsersController {
 
   @Get(':id')
   findOne(@Param('id') id: number) {
-    return this.usersService.findOne(+id);
+    return this.usersService.findOneById(+id);
   }
 
   @Patch(':id')

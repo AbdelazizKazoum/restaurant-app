@@ -30,7 +30,7 @@
               </svg>
               Users
             </router-link>
-            <router-link to="/message"
+            <router-link to="/products"
               class="inline-flex relative items-center py-[10px] px-[10px] w-full text-sm font-medium rounded-md border-gray-200 hover:bg-gray-300  hover:text-gray-800 transition duration-400 ease-in-out">
               <svg aria-hidden="true" class="mr-2 w-[25px] h-[25px] fill-current" fill="currentColor" viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg">
@@ -38,9 +38,9 @@
                   d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 2h10v7h-2l-1 2H8l-1-2H5V5z"
                   clip-rule="evenodd"></path>
               </svg>
-              Messages
+              Products
             </router-link>
-            <router-link to="/download"
+            <router-link to="/"
               class="inline-flex relative items-center py-[10px] px-[10px] w-full text-sm font-medium rounded-md rounded-b-lg hover:bg-gray-300  hover:text-gray-800 transition duration-400 ease-in-out">
               <svg aria-hidden="true" class="mr-2 w-[25px] h-[25px] fill-current" fill="currentColor" viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg">
@@ -54,7 +54,7 @@
           </div>
           <div class="h-[50px]">
             <div>
-              <router-link to="/setting"
+              <router-link to="/"
                 class="inline-flex relative items-center py-[10px] px-[10px] w-full text-sm font-medium rounded-md border-gray-200 hover:bg-gray-300 hover:text-gray-800  transition duration-400 ease-in-out">
                 <svg aria-hidden="true" class="mr-2 w-[25px] h-[25px] fill-current" fill="currentColor"
                   viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -144,8 +144,8 @@
           </div>
         </div>
       </div>
-      <div class="h-[calc(100vh-50px)] bg-gray-50 p-[20px]">
-        <div class="border border-gray-300 rounded-md p-[20px] h-full">
+      <div class="h-[calc(100vh-50px)] bg-gray-50">
+        <div class=" overflow-auto border border-gray-300 rounded-md  h-full">
           <router-view></router-view>
         </div>
       </div>
@@ -176,12 +176,8 @@ export default {
   async mounted() {
     try {
       const { data } = await axios.get('auth');
-
       this.user = data;
-      console.log(this.user)
-
     } catch (err) {
-      console.log('no user')
       this.$router.push({ name: 'signup' })
     }
   },

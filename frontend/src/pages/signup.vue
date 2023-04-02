@@ -27,11 +27,9 @@
                                 class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 required="true">
                         </div>
-                        <div v-for="message in error.messages" class="flex items-start ml-3 text-red-500">
-                            <p>
-                                {{ message }}
-                            </p>
-                        </div>
+                        <P v-for="message in error.messages" class="flex mb-1 items-start ml-3 text-red-500">
+                            {{ message }}
+                        </P>
                         <div class="flex items-start">
                             <div class="flex items-center h-5">
                                 <input id="terms" aria-describedby="terms" type="checkbox"
@@ -65,7 +63,6 @@ import { isArray } from '@vue/shared';
 import axios from 'axios';
 import { reactive, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-
 
 export default {
 
